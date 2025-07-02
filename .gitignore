@@ -1,6 +1,9 @@
 .env
 .env.*
+.envrc
 
 terraform/.terraform
-.tfstate
-.tfstate.backup
+*.tfstate
+*.tfstate.backup
+
+*.pem

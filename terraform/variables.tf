@@ -22,7 +22,24 @@ variable "repository_url" {
   default     = "https://github.com/pmatsinopoulos/setting_up_timescaledb_on_aws"
 }
 
+variable "vpc_id" {
+  description = "The ID of the VPC where the EC2 instance will be launched in."
+  type        = string
+}
+
 variable "subnet_id" {
   description = "The ID of the subnet where the EC2 instance will be launched in."
   type        = string
+}
+
+variable "timescaledb_server_availability_zone" {
+  description = "The availability zone for the TimescaleDB server."
+  type        = string
+  default     = "a"
+}
+
+variable "timescaledb_server_instance_type" {
+  description = "The instance type for the TimescaleDB server."
+  type        = string
+  default     = "t3.xlarge"
 }
