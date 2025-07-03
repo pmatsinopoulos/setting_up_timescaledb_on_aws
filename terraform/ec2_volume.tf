@@ -9,3 +9,9 @@ resource "aws_ebs_volume" "timescaledb_volume" {
     Name = "${var.project}-${var.environment}-timescaledb-volume"
   }
 }
+
+resource "aws_volume_attachment" "timescaledb_volume_attachment" {
+  device_name = "/dev/sdd"
+  volume_id   = aws_ebs_volume.timescaledb_volume.id
+  instance_id = aws_instance.timescaledb.id
+}
