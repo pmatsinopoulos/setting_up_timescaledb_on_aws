@@ -3,7 +3,7 @@ resource "aws_ebs_volume" "timescaledb_volume" {
   size              = 64
   type              = "gp3"
   encrypted         = false
-  final_snapshot    = true
+  final_snapshot    = false
 
   tags = {
     Name = "${var.project}-${var.environment}-timescaledb-volume"
