@@ -43,3 +43,27 @@ variable "timescaledb_server_instance_type" {
   type        = string
   default     = "t3.xlarge"
 }
+
+variable "postgresql_version" {
+  description = "The PostgreSQL version to install on the TimescaleDB server."
+  type        = string
+  default     = "17"
+}
+
+variable "timescaledb_version" {
+  description = "The TimescaleDB version to install on the TimescaleDB server."
+  type        = string
+  default     = "2.19.3"
+}
+
+variable "timescaledb_server_port" {
+  description = "Port for the TimescaleDB server."
+  type        = number
+  default     = 5432
+}
+
+variable "timescaledb_server_postgres_password" {
+  description = "The password for the PostgreSQL user on the TimescaleDB server."
+  type        = string
+  sensitive   = true
+}
