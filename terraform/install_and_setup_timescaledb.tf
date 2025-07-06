@@ -61,13 +61,33 @@ resource "terraform_data" "install_and_setup_timescaledb" {
         // Restart PostgreSQL to apply changes
         "sudo systemctl restart postgresql",
 
+        "sleep 10", // Wait for PostgreSQL to start
+
         // Create the database and set the password for the postgres user
-        "sudo -u postgres psql -c \"ALTER USER postgres WITH PASSWORD '${var.timescaledb_server_postgres_password}';\"",
         "sudo -u postgres psql -c \"create database ${local.db_name};\" || echo \"Database ${local.db_name} already exists, skipping creation.\"",
 
         // Create the extensions for TimescaleDB and TimescaleDB Toolkit
         "sudo -u postgres psql -d ${local.db_name} -c \"CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;\"",
         "sudo -u postgres psql -d ${local.db_name} -c \"CREATE EXTENSION IF NOT EXISTS timescaledb_toolkit CASCADE;\"",
+      ]
+    )
+  }
+}
+
+resource "terraform_data" "postgres_password" {
+  depends_on = [terraform_data.install_and_setup_timescaledb]
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = aws_instance.timescaledb.public_ip
+    private_key = file("${path.module}/timescaledb.pem")
+  }
+
+  provisioner "remote-exec" {
+    inline = concat(
+      [
+        "sudo -u postgres psql -c \"ALTER USER postgres WITH PASSWORD '${var.timescaledb_server_postgres_password}';\""
       ]
     )
   }
