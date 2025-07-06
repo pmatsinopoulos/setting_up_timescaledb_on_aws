@@ -1,6 +1,6 @@
 resource "aws_ebs_volume" "timescaledb_volume" {
   availability_zone = "${var.region}${var.timescaledb_server_availability_zone}"
-  size              = 64
+  size              = 128
   type              = "gp3"
   encrypted         = false
   final_snapshot    = false
