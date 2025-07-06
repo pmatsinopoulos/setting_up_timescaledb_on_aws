@@ -41,7 +41,7 @@ variable "timescaledb_server_availability_zone" {
 variable "timescaledb_server_instance_type" {
   description = "The instance type for the TimescaleDB server."
   type        = string
-  default     = "t3.xlarge"
+  default     = "t3.2xlarge"
 }
 
 variable "postgresql_version" {

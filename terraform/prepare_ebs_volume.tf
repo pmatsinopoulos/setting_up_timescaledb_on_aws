@@ -1,6 +1,10 @@
 resource "terraform_data" "prepare_ebs_volume_for_writing" {
   depends_on = [aws_volume_attachment.timescaledb_volume_attachment]
 
+  triggers_replace = {
+    volume_attachment = aws_volume_attachment.timescaledb_volume_attachment.id
+  }
+
   connection {
     type        = "ssh"
     user        = "ubuntu"

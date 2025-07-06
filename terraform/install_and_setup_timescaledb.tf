@@ -6,6 +6,10 @@ locals {
 resource "terraform_data" "install_and_setup_timescaledb" {
   depends_on = [terraform_data.prepare_ebs_volume_for_writing]
 
+  triggers_replace = {
+    volume_attachment = aws_volume_attachment.timescaledb_volume_attachment.id
+  }
+
   connection {
     type        = "ssh"
     user        = "ubuntu"
