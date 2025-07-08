@@ -7,7 +7,8 @@ resource "terraform_data" "install_and_setup_timescaledb" {
   depends_on = [terraform_data.prepare_ebs_volume_for_writing]
 
   triggers_replace = {
-    volume_attachment = aws_volume_attachment.timescaledb_volume_attachment.id
+    volume_attachment  = aws_volume_attachment.timescaledb_volume_attachment.id
+    postgresql_version = var.postgresql_version
   }
 
   connection {
@@ -30,23 +31,21 @@ resource "terraform_data" "install_and_setup_timescaledb" {
         "sudo DEBIAN_FRONTEND=noninteractive apt install -y postgresql-common apt-transport-https net-tools",
         "sudo DEBIAN_FRONTEND=noninteractive /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y",
         "sudo DEBIAN_FRONTEND=noninteractive apt install -y postgresql-server-dev-${var.postgresql_version}",
+        "sudo DEBIAN_FRONTEND=noninteractive apt install -y postgresql-${var.postgresql_version}",
 
         // Set TimescaleDB repository at system repositories so that we can install TimescaleDB
         "echo \"deb https://packagecloud.io/timescale/timescaledb/ubuntu/ $(lsb_release -c -s) main\" | sudo tee /etc/apt/sources.list.d/timescaledb.list",
         "wget --quiet -O - https://packagecloud.io/timescale/timescaledb/gpgkey | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/timescaledb.gpg",
         "sudo DEBIAN_FRONTEND=noninteractive apt update -y",
 
-        // Install TimescaleDB
-        "sudo apt install timescaledb-2-postgresql-${var.postgresql_version}='${var.timescaledb_version}*' timescaledb-2-loader-postgresql-${var.postgresql_version}='${var.timescaledb_version}*' postgresql-client-${var.postgresql_version} -y",
-
-        // Install TimescaleDB Toolkit
-        "sudo apt install timescaledb-toolkit-postgresql-${var.postgresql_version} -y",
+        // Install TimescaleDB and TimescaleDB Toolkit all TimescaleDB postgres related packages
+        "sudo apt install timescaledb-2-postgresql-${var.postgresql_version}='${var.timescaledb_version}*' timescaledb-2-loader-postgresql-${var.postgresql_version}='${var.timescaledb_version}*' -y",
 
         // Stop postgres from running
         "sudo systemctl stop postgresql",
 
         // Change where PostgreSQL stores its data
-        "[ -d \"/var/lib/postgresql/${var.postgresql_version}/main\"] && sudo mv /var/lib/postgresql/${var.postgresql_version}/main /var/lib/postgresql/${var.postgresql_version}/main.bak",
+        "[ -d \"/var/lib/postgresql/${var.postgresql_version}/main\" ] && sudo mv /var/lib/postgresql/${var.postgresql_version}/main /var/lib/postgresql/${var.postgresql_version}/main.bak",
         "sudo mkdir -p ${local.path_to_postgres_data_dir}",
         "sudo chown -R postgres:postgres /data/postgresql",
         "[ -d \"${local.path_to_postgres_data_dir}\" ] && [ -n \"$(sudo ls -A ${local.path_to_postgres_data_dir} 2>/dev/null)\" ] || sudo -u postgres /usr/lib/postgresql/${var.postgresql_version}/bin/initdb -D ${local.path_to_postgres_data_dir}",

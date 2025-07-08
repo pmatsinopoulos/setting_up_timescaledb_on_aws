@@ -47,7 +47,7 @@ variable "timescaledb_server_instance_type" {
 variable "postgresql_version" {
   description = "The PostgreSQL version to install on the TimescaleDB server."
   type        = string
-  default     = "17"
+  default     = "16"
 }
 
 variable "timescaledb_version" {
