@@ -17,6 +17,8 @@ sudo systemctl stop postgresql@${POSTGRESQL_VERSION}-main || true
 # Install TimescaleDB and TimescaleDB Toolkit all TimescaleDB postgres related packages
 sudo apt install timescaledb-2-postgresql-${POSTGRESQL_VERSION}="${TIMESCALEDB_VERSION}" timescaledb-2-loader-postgresql-${POSTGRESQL_VERSION}="${TIMESCALEDB_VERSION}" timescaledb-toolkit-postgresql-${POSTGRESQL_VERSION} -y
 
+sudo sed -i "s|#shared_preload_libraries = ''|shared_preload_libraries = 'timescaledb'|g" /data/postgresql/${POSTGRESQL_VERSION}/main/postgresql.conf
+
 # Tune TimescaleDB
 sudo timescaledb-tune --yes
 

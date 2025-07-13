@@ -32,7 +32,7 @@ resource "terraform_data" "install_and_setup_timescaledb" {
     inline = concat(
       [
         "sudo chmod u+x /home/ubuntu/install_postgres.sh",
-        "sudo ./install_postgres.sh ${var.postgresql_version} ${var.timescaledb_server_port}  ${local.db_name}",
+        "sudo ./install_postgres.sh ${var.postgresql_version} ${var.timescaledb_server_port}  ${local.db_name} ${var.timescaledb_version}",
 
         "sudo chmod u+x /home/ubuntu/install_timescaledb.sh",
         "sudo ./install_timescaledb.sh ${var.postgresql_version} ${var.timescaledb_version} ${local.db_name}"
